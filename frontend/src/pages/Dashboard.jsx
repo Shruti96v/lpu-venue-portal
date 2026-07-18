@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   ArrowUpRight,
   ArrowDownRight,
+  Wallet,
   X,
   Plus,
   Loader2,
