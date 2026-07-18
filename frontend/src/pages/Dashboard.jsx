@@ -11,7 +11,6 @@ import {
   AlertTriangle,
   ArrowUpRight,
   ArrowDownRight,
-  TrendingUp as SavingsIcon,
   X,
   Plus,
   Loader2,
@@ -184,7 +183,7 @@ export const Dashboard = () => {
           <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Net Monthly Savings</span>
           <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{formatCurrency(monthly.savings, user?.currency)}</h3>
           <div className="flex items-center mt-4 text-indigo-500 text-xs font-semibold">
-            <SavingsIcon className="h-4 w-4 mr-1" />
+            <TrendingUp className="h-4 w-4 mr-1" />
             <span>
               {monthly.income > 0 ? Math.round((monthly.savings / monthly.income) * 100) : 0}% savings rate
             </span>
