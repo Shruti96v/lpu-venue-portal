@@ -30,7 +30,7 @@ const seedData = async () => {
       password: 'password123',
       role: 'admin',
       isVerified: true,
-      currency: 'USD',
+      currency: 'INR',
     });
 
     // Create User
@@ -40,7 +40,7 @@ const seedData = async () => {
       password: 'password123',
       role: 'user',
       isVerified: true,
-      currency: 'USD',
+      currency: 'INR',
     });
 
     console.log('Seeding Budgets...');
