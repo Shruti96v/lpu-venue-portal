@@ -1,0 +1,692 @@
+openapi: 3.0.0
+info:
+  title: Smart Finance Manager API
+  description: API documentation for the Smart Finance Manager ledger and personal finance platform.
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Base API Server
+  - url: http://127.0.0.1:5005/api
+    description: Local development backend server
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: Jane Doe
+                email:
+                  type: string
+                  format: email
+                  example: jane@smartfinance.com
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: password123
+      responses:
+        '21 Created':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    example: eyJhbGciOi...
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Validation error or user already exists
+
+  /auth/login:
+    post:
+      summary: Authenticate user credentials and return JWT
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@smartfinance.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    example: eyJhbGciOi...
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid validation parameters
+        '401':
+          description: Invalid email or password
+
+  /auth/forgot-password:
+    post:
+      summary: Simulate password reset request (logs token to console)
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@smartfinance.com
+      responses:
+        '200':
+          description: Reset link simulated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Password reset link simulated in console. Use token...
+                  resetToken:
+                    type: string
+                    example: abc123def456
+
+  /auth/reset-password:
+    post:
+      summary: Reset user password using token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - password
+              properties:
+                token:
+                  type: string
+                  example: abc123def456
+                password:
+                  type: string
+                  format: password
+                  minLength: 6
+                  example: newpassword123
+      responses:
+        '200':
+          description: Password reset successful
+        '400':
+          description: Invalid token or password rules
+
+  /auth/profile:
+    get:
+      summary: Get current authenticated user profile
+      tags:
+        - User Profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Not authorized
+    put:
+      summary: Update user profile
+      tags:
+        - User Profile
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Johnathan Doe
+                currency:
+                  type: string
+                  example: EUR
+            # More properties if editable
+      responses:
+        '200':
+          description: Profile updated successfully
+        '401':
+          description: Not authorized
+    delete:
+      summary: Delete user profile and cascade delete all their records
+      tags:
+        - User Profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profile and all associated data deleted successfully
+        '401':
+          description: Not authorized
+
+  /expenses:
+    get:
+      summary: Retrieve expenses records
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search description or category
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter by specific category
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            example: date:desc
+      responses:
+        '200':
+          description: List of expenses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  count:
+                    type: integer
+                    example: 1
+                  pagination:
+                    type: object
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+    post:
+      summary: Log a new expense
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - category
+              properties:
+                amount:
+                  type: number
+                  example: 45.00
+                category:
+                  type: string
+                  example: Food
+                date:
+                  type: string
+                  format: date-time
+                  example: "2026-07-29T14:26:00Z"
+                description:
+                  type: string
+                  example: Business meeting lunch
+      responses:
+        '201':
+          description: Expense logged successfully
+
+  /expenses/{id}:
+    put:
+      summary: Update an expense record
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        '200':
+          description: Expense updated successfully
+    delete:
+      summary: Delete an expense record
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expense deleted successfully
+
+  /income:
+    get:
+      summary: Retrieve income records
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of incomes
+    post:
+      summary: Log a new income
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        '201':
+          description: Income logged successfully
+
+  /income/{id}:
+    put:
+      summary: Update an income record
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        '200':
+          description: Income updated successfully
+    delete:
+      summary: Delete an income record
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Income deleted successfully
+
+  /budgets:
+    get:
+      summary: Get budgets list for a month
+      tags:
+        - Budgets & Goals
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: month
+          in: query
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}$'
+          description: Month in YYYY-MM format (defaults to current month)
+      responses:
+        '200':
+          description: Budgets list
+    post:
+      summary: Set or update budget for a category
+      tags:
+        - Budgets & Goals
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category
+                - amount
+              properties:
+                category:
+                  type: string
+                  example: Food
+                amount:
+                  type: number
+                  example: 500
+                month:
+                  type: string
+                  example: "2026-07"
+      responses:
+        '200':
+          description: Budget saved successfully
+
+  /goals:
+    get:
+      summary: Get savings goals list
+      tags:
+        - Budgets & Goals
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Goals list
+    post:
+      summary: Add a savings goal
+      tags:
+        - Budgets & Goals
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - targetAmount
+                - deadline
+              properties:
+                name:
+                  type: string
+                  example: Emergency Fund
+                targetAmount:
+                  type: number
+                  example: 5000
+                currentAmount:
+                  type: number
+                  example: 1000
+                deadline:
+                  type: string
+                  format: date-time
+                  example: "2026-12-31T00:00:00Z"
+      responses:
+        '201':
+          description: Savings goal created
+
+  /goals/{id}:
+    put:
+      summary: Update a savings goal
+      tags:
+        - Budgets & Goals
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                targetAmount:
+                  type: number
+                currentAmount:
+                  type: number
+                deadline:
+                  type: string
+                  format: date-time
+                status:
+                  type: string
+                  enum: [active, achieved, failed]
+      responses:
+        '200':
+          description: Goal updated successfully
+    delete:
+      summary: Delete a savings goal
+      tags:
+        - Budgets & Goals
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Goal deleted successfully
+
+  /dashboard:
+    get:
+      summary: Get aggregated financial summary for dashboard
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Dashboard financial summary details
+
+  /admin/users:
+    get:
+      summary: Get list of registered platform users (Admin only)
+      tags:
+        - Administrative Tools
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Users list
+        '403':
+          description: Admin privilege required
+
+  /admin/users/{id}:
+    delete:
+      summary: Force remove a user (Admin only)
+      tags:
+        - Administrative Tools
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User account purged successfully
+
+  /admin/stats:
+    get:
+      summary: Get global system statistics (Admin only)
+      tags:
+        - Administrative Tools
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Statistics details
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+        currency:
+          type: string
+        twoFactorEnabled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    Transaction:
+      type: object
+      properties:
+        _id:
+          type: string
+        user:
+          type: string
+        type:
+          type: string
+          enum: [income, expense]
+        amount:
+          type: number
+        category:
+          type: string
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+    TransactionInput:
+      type: object
+      required:
+        - amount
+        - category
+      properties:
+        amount:
+          type: number
+          example: 85
+        category:
+          type: string
+          example: Food
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string

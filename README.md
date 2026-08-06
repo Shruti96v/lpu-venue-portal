@@ -377,29 +377,109 @@ Sets or updates category limit parameters.
 
 ---
 
-## Deployment Guide
+## DevOps Dockerization & CI/CD Pipeline Guide
 
-### Deploying the Backend on Render
-1. Sign up on [Render](https://render.com) and click **New > Web Service**.
-2. Link your Git repository.
-3. Configure the settings:
-   - **Environment**: `Node`
-   - **Build Command**: `cd backend && npm install`
-   - **Start Command**: `cd backend && node server.js`
-4. Set Environment Variables under the **Variables** tab:
-   - `MONGO_URI`: Your MongoDB Atlas URI.
-   - `JWT_SECRET`: A secure key.
-   - `PORT`: `10000` (or let Render assign it automatically).
+This project includes a fully production-ready DevOps CI/CD pipeline. All services (frontend, backend, database) are containerized using Docker, and the deployment is automated from Docker Hub to Render.
+
+### 1. Architecture & Pipeline Flow
+
+The deployment pipeline is triggered automatically on every git push or pull request to the `main` branch:
+
+```text
+Developer (Git Push)
+    ↓
+GitHub Repository
+    ↓
+GitHub Actions (Triggered)
+    ├─► Install Dependencies (Frontend/Backend)
+    ├─► Run Frontend Linting (oxlint)
+    ├─► Run Backend Unit Tests (Jest)
+    └─► Run Backend Integration Tests (Database-dependent)
+    ↓ (Passes)
+Build Docker Images
+    ├─► Backend: node:20-alpine
+    └─► Frontend: nginx:alpine serving React + reverse proxy
+    ↓ (Pushed to Registry)
+Docker Hub (Hosted Image Repository)
+    ↓ (CD Triggered)
+Render Deployment (Pulls latest images & starts containers)
+```
+
+---
+
+### 2. Docker Setup & Configurations
+
+#### A. Backend Dockerfile
+The backend uses a multi-stage Docker build (`backend/Dockerfile`) based on `node:20-alpine`:
+- Installs only production dependencies to maintain a lightweight image.
+- Implements a Docker healthcheck using the container's built-in `wget` command to query `/health`.
+
+#### B. Frontend Dockerfile & Nginx Proxy
+The frontend uses a multi-stage Docker build (`frontend/Dockerfile`):
+- **Build Stage**: Compiles React JS files with Vite (injecting `VITE_API_URL=/api` so requests are relative).
+- **Run Stage**: Serves the build artifacts using `nginx:alpine`.
+- **Nginx Config (`frontend/nginx.conf.template`)**: Acts as a reverse proxy. It listens on port 80, serves static files, and routes `/api` and `/health` requests directly to `${BACKEND_URL}`.
+- Nginx resolves `${BACKEND_URL}` at startup via environment variable substitution.
+
+#### C. Local Multi-Container Orchestration (Docker Compose)
+A `docker-compose.yml` is provided in the project root to start the entire stack:
+- **mongodb**: Official MongoDB image with persistent volume mapping.
+- **backend**: Express server running on port `5005` inside the docker network.
+- **frontend**: Nginx server exposing port `8080` (mapping to Nginx port 80).
+
+**To start the local stack:**
+```bash
+# Start all containers in background
+docker compose up -d
+
+# Check status of running containers
+docker compose ps
+
+# View service logs
+docker compose logs -f
+
+# Shut down the stack and remove networks
+docker compose down -v
+```
+
+---
+
+### 3. CI/CD GitHub Actions Configuration (`.github/workflows/ci-cd.yml`)
+
+The pipeline runs in three sequential jobs:
+
+1. **`test` (CI)**: Checks out the repo, sets up Node.js v20, runs a MongoDB service container, installs dependencies, executes Jest unit tests, and runs integration tests. It also runs frontend linting using `oxlint`.
+2. **`build-and-push` (CI)**: Runs after tests succeed. Authenticates with Docker Hub using repository secrets, builds backend and frontend images, tags them with the commit SHA and `latest`, and pushes them to Docker Hub.
+3. **`deploy` (CD)**: Runs only on direct pushes to `main`. Calls Render's Deploy Hook URLs. Render then pulls the updated image from Docker Hub and initiates a rolling deployment.
+
+---
+
+### 4. Render Deployment & Secrets Configuration
+
+To deploy the application via Docker Hub to Render:
+
+#### Step 1: Add GitHub Secrets
+Navigate to your repository **Settings > Secrets and variables > Actions** and add:
+- `DOCKER_USERNAME`: Your Docker Hub username.
+- `DOCKER_PASSWORD`: Your Docker Hub Personal Access Token (PAT).
+- `RENDER_BACKEND_DEPLOY_HOOK`: The backend redeployment URL provided by Render.
+- `RENDER_FRONTEND_DEPLOY_HOOK`: The frontend redeployment URL provided by Render.
+
+#### Step 2: Set up Backend on Render
+1. Create a **New > Web Service** on Render.
+2. Select **Deploy an existing image from a registry**.
+3. Input the backend image tag: `docker.io/<your-username>/smart-finance-backend:latest`
+4. Set the environment variables in the Render dashboard:
+   - `PORT`: `5005`
    - `NODE_ENV`: `production`
+   - `JWT_SECRET`: A secure random string.
+   - `MONGO_URI`: Your MongoDB database connection string (e.g. MongoDB Atlas or Render's Managed Redis/MongoDB).
+5. Under **Settings**, copy the **Deploy Hook** URL and save it as your GitHub secret `RENDER_BACKEND_DEPLOY_HOOK`.
 
-### Deploying the Frontend on Vercel
-1. Log in to [Vercel](https://vercel.com) and click **Add New > Project**.
-2. Import your Git repository.
-3. In **Project Settings**, configure:
-   - **Framework Preset**: `Vite`
-   - **Root Directory**: `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-4. Add the following Environment Variable:
-   - `VITE_API_URL`: Your backend Web Service URL deployed on Render (e.g. `https://your-backend.onrender.com/api`).
-5. Click **Deploy**. Vercel will build and serve your frontend static assets.
+#### Step 3: Set up Frontend on Render
+1. Create another **New > Web Service** on Render.
+2. Select **Deploy an existing image from a registry**.
+3. Input the frontend image tag: `docker.io/<your-username>/smart-finance-frontend:latest`
+4. Set the environment variables in the Render dashboard:
+   - `BACKEND_URL`: The public URL of your backend Render service (e.g. `https://smart-finance-backend.onrender.com`).
+5. Under **Settings**, copy the **Deploy Hook** URL and save it as your GitHub secret `RENDER_FRONTEND_DEPLOY_HOOK`.
