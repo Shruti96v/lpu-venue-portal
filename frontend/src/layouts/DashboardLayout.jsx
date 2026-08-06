@@ -44,13 +44,13 @@ export const DashboardLayout = ({ children }) => {
               activeAlerts.push({
                 id: `budget-${bp.category}`,
                 type: 'danger',
-                message: `Budget Exceeded: Spent $${bp.spent} of $${bp.limit} in ${bp.category}!`,
+                message: `Budget Exceeded: Spent ₹${bp.spent} of ₹${bp.limit} in ${bp.category}!`,
               });
             } else if (bp.spent / bp.limit >= 0.8) {
               activeAlerts.push({
                 id: `budget-warn-${bp.category}`,
                 type: 'warning',
-                message: `Approaching Budget: Spent $${bp.spent} of $${bp.limit} (80%+) in ${bp.category}!`,
+                message: `Approaching Budget: Spent ₹${bp.spent} of ₹${bp.limit} (80%+) in ${bp.category}!`,
               });
             }
           });
