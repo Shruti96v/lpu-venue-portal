@@ -20,7 +20,7 @@ export const Settings = () => {
   const [name, setName] = useState(user?.name || '');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [currency, setCurrency] = useState(user?.currency || 'USD');
+  const [currency, setCurrency] = useState(user?.currency || 'INR');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(user?.twoFactorEnabled || false);
   
   // Loading & Msg states
