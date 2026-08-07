@@ -483,3 +483,4 @@ Navigate to your repository **Settings > Secrets and variables > Actions** and a
 4. Set the environment variables in the Render dashboard:
    - `BACKEND_URL`: The public URL of your backend Render service (e.g. `https://smart-finance-backend.onrender.com`).
 5. Under **Settings**, copy the **Deploy Hook** URL and save it as your GitHub secret `RENDER_FRONTEND_DEPLOY_HOOK`.
+
