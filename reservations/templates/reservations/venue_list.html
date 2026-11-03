@@ -1,0 +1,178 @@
+{% extends 'reservations/base.html' %}
+{% load static %}
+{% block title %}LPU Campus Venues | Venue Reservation Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">LPU Campus Venue Directory</h1>
+        <p class="page-subtitle">
+            Explore SDMA, BRM Auditorium, Uni Polis, Helipad Ground, Sports Ground,
+            and Seminar Halls at Lovely Professional University, Phagwara.
+        </p>
+    </div>
+    <div class="header-actions">
+        <a href="{% url 'venue_compare' %}" class="btn btn-outline">
+            <i class="fa-solid fa-code-compare"></i> Compare Venues
+        </a>
+        <a href="{% url 'recommend_venue' %}" class="btn btn-primary">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Find Best Venue
+        </a>
+    </div>
+</div>
+
+<!-- ── Filters ─────────────────────────────────────────────────────────────── -->
+<div class="card margin-bottom-lg">
+    <div class="card-body">
+        <form method="GET" action="{% url 'venue_list' %}" class="filter-form">
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label class="form-label font-bold text-xs"><i class="fa-solid fa-magnifying-glass"></i> Search Venue</label>
+                    {{ filter_form.search }}
+                </div>
+                <div class="filter-group">
+                    <label class="form-label font-bold text-xs"><i class="fa-solid fa-tag"></i> Venue Type</label>
+                    {{ filter_form.venue_type }}
+                </div>
+                <div class="filter-group">
+                    <label class="form-label font-bold text-xs"><i class="fa-solid fa-users"></i> Min Capacity</label>
+                    {{ filter_form.min_capacity }}
+                </div>
+                <div class="filter-checkboxes">
+                    <label class="form-check-label">{{ filter_form.is_outdoor }} Outdoor</label>
+                    <label class="form-check-label">{{ filter_form.has_ac }} AC</label>
+                    <label class="form-check-label">{{ filter_form.has_stage }} Stage</label>
+                    <label class="form-check-label">{{ filter_form.has_tent_setup }} Tent Allowed</label>
+                    <label class="form-check-label">{{ filter_form.has_video_conferencing }} Video Conf.</label>
+                </div>
+                <div class="filter-buttons">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-filter"></i> Filter</button>
+                    <a href="{% url 'venue_list' %}" class="btn btn-outline btn-sm">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ── Venue Cards ─────────────────────────────────────────────────────────── -->
+<div class="venue-cards-grid">
+    {% for v in venues %}
+    <div class="card venue-card">
+
+        <!-- Image -->
+        <div class="venue-card-header">
+            <img src="{{ v.image_url }}"
+                 alt="{{ v.name }}"
+                 class="venue-img"
+                 onerror="this.src='https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80'">
+
+            <!-- Outdoor / Indoor Badge -->
+            <div class="venue-type-badge {% if v.is_outdoor %}badge-outdoor{% else %}badge-indoor{% endif %}">
+                {% if v.is_outdoor %}
+                    <i class="fa-solid fa-sun"></i> Outdoor
+                {% else %}
+                    <i class="fa-solid fa-building"></i> Indoor
+                {% endif %}
+            </div>
+
+            <div class="venue-capacity-badge">
+                <i class="fa-solid fa-users"></i> ~{{ v.capacity }}
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body venue-card-body">
+            <div class="venue-title-row">
+                <div>
+                    <h3 class="venue-title">
+                        {% if v.short_name %}<span class="venue-short-name">{{ v.short_name }}</span>{% endif %}
+                        {{ v.name }}
+                    </h3>
+                    <span class="venue-location text-xs text-muted">
+                        <i class="fa-solid fa-location-dot"></i> {{ v.building_location }}
+                    </span>
+                </div>
+                <span class="badge badge-subtle">{{ v.get_venue_type_display }}</span>
+            </div>
+
+            <p class="venue-description text-sm text-muted margin-top-xs">
+                {{ v.description|truncatewords:22 }}
+            </p>
+
+            <!-- Specs -->
+            <div class="venue-specs-box">
+                <div class="spec-item">
+                    <i class="fa-solid fa-video text-primary"></i>
+                    <div>
+                        <span class="spec-label">Projection</span>
+                        <strong class="spec-value">
+                            {{ v.projector_type|default:"Not available" }}
+                        </strong>
+                    </div>
+                </div>
+                <div class="spec-item">
+                    <i class="fa-solid fa-microphone text-info"></i>
+                    <div>
+                        <span class="spec-label">Audio / Mic</span>
+                        <strong class="spec-value">
+                            {{ v.mic_system_type|default:"Not available" }}
+                        </strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Tags -->
+            <div class="venue-feature-tags">
+                {% if v.has_ac %}<span class="feature-tag tag-ac"><i class="fa-solid fa-snowflake"></i> AC</span>{% endif %}
+                {% if v.has_wifi %}<span class="feature-tag tag-wifi"><i class="fa-solid fa-wifi"></i> Wi-Fi</span>{% endif %}
+                {% if v.has_whiteboard %}<span class="feature-tag tag-whiteboard"><i class="fa-solid fa-chalkboard"></i> Whiteboard</span>{% endif %}
+                {% if v.has_stage %}<span class="feature-tag tag-stage"><i class="fa-solid fa-masks-theater"></i> Stage</span>{% endif %}
+                {% if v.has_recording %}<span class="feature-tag tag-recording"><i class="fa-solid fa-circle-dot"></i> Recording</span>{% endif %}
+                {% if v.has_video_conferencing %}<span class="feature-tag tag-conf"><i class="fa-solid fa-headset"></i> Video Conf</span>{% endif %}
+                {% if v.has_tent_setup %}<span class="feature-tag tag-tent"><i class="fa-solid fa-tent"></i> Tent OK</span>{% endif %}
+                {% if v.has_parking %}<span class="feature-tag tag-parking"><i class="fa-solid fa-square-parking"></i> Parking</span>{% endif %}
+            </div>
+
+            <!-- Contact for Booking (for seminar halls / grounds) -->
+            {% if v.booking_contact_phone %}
+            <div class="contact-box margin-top-sm">
+                <div class="contact-box-title"><i class="fa-solid fa-phone-volume text-success"></i> Contact to Book</div>
+                <div class="text-xs text-muted">{{ v.booking_contact_office }}</div>
+                <div class="text-xs margin-top-xs">
+                    <a href="tel:{{ v.booking_contact_phone }}"><i class="fa-solid fa-phone"></i> {{ v.booking_contact_phone }}</a>
+                    {% if v.booking_contact_email %}
+                    &bull;
+                    <a href="mailto:{{ v.booking_contact_email }}"><i class="fa-solid fa-envelope"></i> {{ v.booking_contact_email }}</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Actions -->
+        <div class="card-footer venue-card-footer">
+            <a href="{% url 'venue_detail' v.slug %}" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-circle-info"></i> Details
+            </a>
+            <a href="{% url 'calendar' %}?venue={{ v.id }}" class="btn btn-outline btn-sm">
+                <i class="fa-regular fa-calendar-days"></i> Availability
+            </a>
+            <a href="{% url 'booking_create' %}?venue={{ v.id }}" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-calendar-plus"></i> Book Now
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <div class="empty-icon"><i class="fa-solid fa-building-circle-xmark fa-3x text-muted"></i></div>
+                <h3>No Venues Match Your Filter</h3>
+                <p class="text-muted">Try adjusting your search or filters.</p>
+                <a href="{% url 'venue_list' %}" class="btn btn-primary margin-top-sm">Clear Filters</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

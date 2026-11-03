@@ -1,0 +1,149 @@
+{% extends 'reservations/base.html' %}
+{% load static %}
+
+{% block title %}Venue Specs Comparison | Campus Venue Reservation System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Side-by-Side Venue Specification Comparison</h1>
+        <p class="page-subtitle">Compare seating capacity, projector types, audio systems, and room features across all campus auditoriums & halls.</p>
+    </div>
+    <div class="header-actions">
+        <a href="{% url 'venue_list' %}" class="btn btn-outline">&larr; Back to Directory</a>
+        <a href="{% url 'booking_create' %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Book Venue</a>
+    </div>
+</div>
+
+<div class="card margin-bottom-lg">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th style="width: 22%;">Specification Feature</th>
+                        {% for v in compare_venues %}
+                        <th style="width: 19.5%;" class="text-center">
+                            <div class="compare-venue-header">
+                                <h3>{{ v.name }}</h3>
+                                <span class="badge badge-info"><i class="fa-solid fa-chair"></i> {{ v.capacity }} Seats</span>
+                                <div class="margin-top-xs">
+                                    <a href="{% url 'booking_create' %}?venue={{ v.id }}" class="btn btn-xs btn-primary">Book Now</a>
+                                </div>
+                            </div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-location-dot text-primary"></i> Building Location</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">{{ v.building_location }} ({{ v.floor }})</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-users text-primary"></i> Max Seating Capacity</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center font-bold text-primary">{{ v.capacity }} Persons</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-video text-info"></i> Projector System</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">{{ v.projector_type }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-microphone text-success"></i> Audio & Mic Systems</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">{{ v.mic_system_type }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-snowflake text-accent"></i> Air Conditioning (AC)</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">
+                            {% if v.has_ac %}
+                                <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-xmark text-muted fa-lg"></i>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-wifi text-warning"></i> High-Speed Wi-Fi</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">
+                            {% if v.has_wifi %}
+                                <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-xmark text-muted fa-lg"></i>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-chalkboard text-info"></i> Whiteboard</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">
+                            {% if v.has_whiteboard %}
+                                <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-xmark text-muted fa-lg"></i>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-masks-theater text-purple"></i> Stage & Podium</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">
+                            {% if v.has_stage %}
+                                <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-xmark text-muted fa-lg"></i>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-video-slash text-danger"></i> Live Recording Suite</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">
+                            {% if v.has_recording %}
+                                <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-xmark text-muted fa-lg"></i>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong><i class="fa-solid fa-headset text-primary"></i> Video Conferencing Unit</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">
+                            {% if v.has_video_conferencing %}
+                                <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-xmark text-muted fa-lg"></i>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td><strong>Actions</strong></td>
+                        {% for v in compare_venues %}
+                        <td class="text-center">
+                            <a href="{% url 'venue_detail' v.slug %}" class="btn btn-xs btn-outline">Specs</a>
+                            <a href="{% url 'calendar' %}?venue={{ v.id }}" class="btn btn-xs btn-outline">Schedule</a>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

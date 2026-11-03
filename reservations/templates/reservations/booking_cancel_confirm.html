@@ -1,0 +1,27 @@
+{% extends 'reservations/base.html' %}
+{% load static %}
+
+{% block title %}Cancel Booking {{ booking.booking_ref }} | Campus Venue System{% endblock %}
+
+{% block content %}
+<div class="card max-w-lg margin-auto margin-top-xl">
+    <div class="card-header bg-danger-subtle">
+        <h3 class="card-title text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Confirm Booking Cancellation</h3>
+    </div>
+    <div class="card-body text-center py-4">
+        <p class="text-lg">Are you sure you want to cancel reservation <strong>#{{ booking.booking_ref }}</strong>?</p>
+        <div class="bg-light p-3 rounded margin-y-md text-left text-sm">
+            <p><strong>Event:</strong> {{ booking.event_name }}</p>
+            <p><strong>Venue:</strong> {{ booking.venue.name }}</p>
+            <p><strong>Date & Time:</strong> {{ booking.date|date:"M d, Y" }} ({{ booking.start_time|time:"h:i A" }} - {{ booking.end_time|time:"h:i A" }})</p>
+        </div>
+        <p class="text-xs text-muted">This action will release the reserved time slot back into the campus availability pool.</p>
+
+        <form method="POST" action="{% url 'booking_cancel' booking.booking_ref %}" class="margin-top-lg flex-center gap-md">
+            {% csrf_token %}
+            <a href="{% url 'booking_detail' booking.booking_ref %}" class="btn btn-outline">Keep Booking</a>
+            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-ban"></i> Yes, Cancel Reservation</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

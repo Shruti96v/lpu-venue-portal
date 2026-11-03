@@ -1,0 +1,195 @@
+{% extends 'reservations/base.html' %}
+{% load static %}
+
+{% block title %}Admin Management Portal | Campus Venue Reservation System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title"><i class="fa-solid fa-user-shield text-primary"></i> Venue Administration Portal</h1>
+        <p class="page-subtitle">Review booking requests, approve or reject applications, view venue statistics, and manage schedule availability.</p>
+    </div>
+    <div class="header-actions">
+        <a href="/django-admin/" target="_blank" class="btn btn-outline">
+            <i class="fa-solid fa-gear"></i> Full Django Admin
+        </a>
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="stats-grid margin-bottom-lg">
+    <div class="stat-card stat-yellow">
+        <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+        <div class="stat-details">
+            <span class="stat-value">{{ pending_count }}</span>
+            <span class="stat-label">Pending Approval</span>
+        </div>
+    </div>
+    <div class="stat-card stat-blue">
+        <div class="stat-icon"><i class="fa-solid fa-thumbs-up"></i></div>
+        <div class="stat-details">
+            <span class="stat-value">{{ approved_count }}</span>
+            <span class="stat-label">Approved</span>
+        </div>
+    </div>
+    <div class="stat-card stat-green">
+        <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="stat-details">
+            <span class="stat-value">{{ reserved_count }}</span>
+            <span class="stat-label">Reserved (Confirmed)</span>
+        </div>
+    </div>
+    <div class="stat-card stat-red">
+        <div class="stat-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div class="stat-details">
+            <span class="stat-value">{{ rejected_count }}</span>
+            <span class="stat-label">Rejected</span>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Booking Requests Management -->
+<div class="card margin-bottom-lg">
+    <div class="card-header flex-between-center flex-wrap gap-md">
+        <div>
+            <h3 class="card-title"><i class="fa-solid fa-tasks text-primary"></i> Booking Approvals & Management</h3>
+            <p class="card-subtitle">Take instant actions on pending or active booking requests</p>
+        </div>
+
+        <div class="status-tabs">
+            <a href="{% url 'admin_dashboard' %}?status=ALL" class="status-tab {% if status_filter == 'ALL' %}active{% endif %}">All</a>
+            <a href="{% url 'admin_dashboard' %}?status=PENDING" class="status-tab {% if status_filter == 'PENDING' %}active{% endif %}">Pending ({{ pending_count }})</a>
+            <a href="{% url 'admin_dashboard' %}?status=APPROVED" class="status-tab {% if status_filter == 'APPROVED' %}active{% endif %}">Approved</a>
+            <a href="{% url 'admin_dashboard' %}?status=RESERVED" class="status-tab {% if status_filter == 'RESERVED' %}active{% endif %}">Reserved</a>
+            <a href="{% url 'admin_dashboard' %}?status=REJECTED" class="status-tab {% if status_filter == 'REJECTED' %}active{% endif %}">Rejected</a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking Ref</th>
+                        <th>Event & Type</th>
+                        <th>Venue</th>
+                        <th>Date & Time</th>
+                        <th>Organizer Details</th>
+                        <th>Attendance</th>
+                        <th>Status</th>
+                        <th style="min-width: 220px;">Administrative Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'booking_detail' b.booking_ref %}" class="font-mono text-primary font-bold">
+                                {{ b.booking_ref }}
+                            </a>
+                            <div class="text-xs text-muted">{{ b.created_at|date:"M d, H:i" }}</div>
+                        </td>
+                        <td>
+                            <strong>{{ b.event_name }}</strong>
+                            <div class="text-xs text-muted">{{ b.get_event_type_display }}</div>
+                        </td>
+                        <td>
+                            <strong>{{ b.venue.name }}</strong>
+                            <div class="text-xs text-muted">{{ b.venue.building_location }}</div>
+                        </td>
+                        <td>
+                            <div>{{ b.date|date:"b d, Y" }}</div>
+                            <div class="text-xs text-muted">{{ b.start_time|time:"h:i A" }} - {{ b.end_time|time:"h:i A" }}</div>
+                        </td>
+                        <td>
+                            <div>{{ b.organizer_name }} ({{ b.organizer_id }})</div>
+                            <div class="text-xs text-muted">{{ b.department_club }} &bull; {{ b.phone }}</div>
+                        </td>
+                        <td>{{ b.expected_attendance }} / {{ b.venue.capacity }}</td>
+                        <td>
+                            <span class="badge badge-{{ b.status|lower }}">
+                                <span class="badge-dot"></span> {{ b.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="POST" action="{% url 'admin_booking_action' b.booking_ref %}" class="admin-action-form flex-center gap-xs">
+                                {% csrf_token %}
+                                {% if b.status == 'PENDING' %}
+                                    <button type="submit" name="action" value="APPROVE" class="btn btn-xs btn-success" title="Approve Request">
+                                        <i class="fa-solid fa-check"></i> Approve
+                                    </button>
+                                    <button type="submit" name="action" value="REJECT" class="btn btn-xs btn-danger" title="Reject Request">
+                                        <i class="fa-solid fa-xmark"></i> Reject
+                                    </button>
+                                {% elif b.status == 'APPROVED' %}
+                                    <button type="submit" name="action" value="RESERVE" class="btn btn-xs btn-primary" title="Confirm Reservation">
+                                        <i class="fa-solid fa-lock"></i> Mark Reserved
+                                    </button>
+                                    <button type="submit" name="action" value="CANCEL" class="btn btn-xs btn-outline" title="Cancel Booking">
+                                        Cancel
+                                    </button>
+                                {% else %}
+                                    <a href="{% url 'booking_detail' b.booking_ref %}" class="btn btn-xs btn-outline">View Details</a>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4">No booking requests found for this status.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Campus Venues Management Overview -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fa-solid fa-building text-info"></i> Campus Venue Directory & Booking Counts</h3>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Venue Name</th>
+                        <th>Building Location</th>
+                        <th>Capacity</th>
+                        <th>Projector & Mic Specs</th>
+                        <th>Status</th>
+                        <th>Total Bookings Logged</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in venues %}
+                    <tr>
+                        <td><strong>{{ v.name }}</strong></td>
+                        <td>{{ v.building_location }} ({{ v.floor }})</td>
+                        <td><i class="fa-solid fa-users text-primary"></i> {{ v.capacity }} Seats</td>
+                        <td>
+                            <div class="text-xs">{{ v.projector_type }}</div>
+                            <div class="text-xs text-muted">{{ v.mic_system_type }}</div>
+                        </td>
+                        <td>
+                            {% if v.is_active %}
+                            <span class="badge badge-success"><i class="fa-solid fa-circle"></i> Active</span>
+                            {% else %}
+                            <span class="badge badge-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ v.total_bookings }}</strong> Bookings</td>
+                        <td>
+                            <a href="{% url 'calendar' %}?venue={{ v.id }}" class="btn btn-xs btn-outline">Schedule</a>
+                            <a href="{% url 'venue_detail' v.slug %}" class="btn btn-xs btn-outline">Specs</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

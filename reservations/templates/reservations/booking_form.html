@@ -1,0 +1,236 @@
+{% extends 'reservations/base.html' %}
+{% load static %}
+{% block title %}Request Venue Booking | LPU Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Request Venue Booking</h1>
+        <p class="page-subtitle">Submit a booking request for an LPU campus venue.</p>
+    </div>
+    <div class="header-actions">
+        <a href="{% url 'venue_list' %}" class="btn btn-outline">
+            <i class="fa-solid fa-map"></i> Browse Venues
+        </a>
+    </div>
+</div>
+
+<form method="POST" autocomplete="off">
+{% csrf_token %}
+
+<div class="booking-form-grid">
+
+    <!-- ── Left: Form Fields ──────────────────────────────────────────────── -->
+    <div>
+
+        <!-- Non-field Errors -->
+        {% if form.non_field_errors %}
+        <div class="form-errors-box">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Event Info -->
+        <div class="card margin-bottom-md">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-calendar-star text-primary"></i> Event Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label">Event Name *</label>
+                    {{ form.event_name }}
+                    {% if form.event_name.errors %}<div class="field-error">{{ form.event_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Event Type *</label>
+                        {{ form.event_type }}
+                        {% if form.event_type.errors %}<div class="field-error">{{ form.event_type.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Venue *</label>
+                        <select name="venue" id="id_venue" class="form-select" required>
+                            <option value="">-- Select Venue --</option>
+                            {% for v in venues %}
+                            <option value="{{ v.id }}"
+                                    data-capacity="{{ v.capacity }}"
+                                    {% if form.venue.value == v.id|stringformat:"s" %}selected{% endif %}>
+                                {% if v.short_name %}{{ v.short_name }} — {% endif %}{{ v.name }} (~{{ v.capacity }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.venue.errors %}<div class="field-error">{{ form.venue.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Event Description</label>
+                    {{ form.event_description }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Organizer Info -->
+        <div class="card margin-bottom-md">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-user text-info"></i> Organizer Details</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        {{ form.organizer_name }}
+                        {% if form.organizer_name.errors %}<div class="field-error">{{ form.organizer_name.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">UID / Faculty ID *</label>
+                        {{ form.organizer_id }}
+                        {% if form.organizer_id.errors %}<div class="field-error">{{ form.organizer_id.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">LPU Email *</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}<div class="field-error">{{ form.email.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone *</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}<div class="field-error">{{ form.phone.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">School / Department / Club *</label>
+                    {{ form.department_club }}
+                    {% if form.department_club.errors %}<div class="field-error">{{ form.department_club.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule -->
+        <div class="card margin-bottom-md">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-regular fa-calendar text-success"></i> Schedule &amp; Attendance</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-row form-row-3">
+                    <div class="form-group">
+                        <label class="form-label">Date *</label>
+                        {{ form.date }}
+                        {% if form.date.errors %}<div class="field-error">{{ form.date.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Start Time *</label>
+                        {{ form.start_time }}
+                        {% if form.start_time.errors %}<div class="field-error">{{ form.start_time.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Time *</label>
+                        {{ form.end_time }}
+                        {% if form.end_time.errors %}<div class="field-error">{{ form.end_time.errors.0 }}</div>{% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Expected Attendance *</label>
+                    {{ form.expected_attendance }}
+                    <div id="capacityHint" class="text-xs margin-top-xs" style="color:var(--text-muted);">
+                        Select a venue to see capacity.
+                    </div>
+                    {% if form.expected_attendance.errors %}<div class="field-error">{{ form.expected_attendance.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- AV Equipment -->
+        <div class="card margin-bottom-md">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-microphone text-warning"></i> Required Equipment &amp; Infrastructure</h3>
+            </div>
+            <div class="card-body">
+                <ul class="equipment-checkbox-grid">
+                {% for eq in form.required_equipment %}
+                    <li>{{ eq }}</li>
+                {% endfor %}
+                </ul>
+                {% if form.required_equipment.errors %}
+                    <div class="field-error">{{ form.required_equipment.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Special Requirements -->
+        <div class="card margin-bottom-md">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-note-sticky text-purple" style="color:var(--purple)"></i> Special Requirements</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group" style="margin-bottom:0">
+                    {{ form.special_requirements }}
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block">
+            <i class="fa-solid fa-paper-plane"></i> Submit Booking Request
+        </button>
+    </div>
+
+    <!-- ── Right Sidebar ──────────────────────────────────────────────────── -->
+    <div>
+        <div class="card margin-bottom-md">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-circle-info text-info"></i> How it Works</h3>
+            </div>
+            <div class="card-body">
+                <div class="quick-action-list">
+                    <div class="quick-action-item" style="cursor:default">
+                        <div class="qa-icon" style="background:#eff6ff"><i class="fa-solid fa-1 text-primary"></i></div>
+                        <div><strong>Submit Request</strong><p class="text-xs text-muted">Fill this form and submit</p></div>
+                    </div>
+                    <div class="quick-action-item" style="cursor:default">
+                        <div class="qa-icon" style="background:#fffbeb"><i class="fa-solid fa-2" style="color:var(--warning)"></i></div>
+                        <div><strong>Admin Reviews</strong><p class="text-xs text-muted">Estate Office checks availability</p></div>
+                    </div>
+                    <div class="quick-action-item" style="cursor:default">
+                        <div class="qa-icon" style="background:#f0fdf4"><i class="fa-solid fa-3 text-success"></i></div>
+                        <div><strong>Confirmation</strong><p class="text-xs text-muted">Status updated to Approved/Reserved</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-phone text-success"></i> Need Help?</h3>
+            </div>
+            <div class="card-body">
+                <div class="text-sm">
+                    <p class="margin-bottom-sm"><i class="fa-solid fa-building text-muted"></i> Estate &amp; Infrastructure Office</p>
+                    <p class="margin-bottom-sm"><i class="fa-solid fa-phone text-success"></i> <a href="tel:01824404404">01824-404404</a></p>
+                    <p><i class="fa-solid fa-envelope text-primary"></i> <a href="mailto:events@lpu.co.in">events@lpu.co.in</a></p>
+                </div>
+                <div class="margin-top-md">
+                    <a href="{% url 'recommend_venue' %}" class="btn btn-outline btn-block btn-sm">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Not sure which venue? Use Recommender
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Pre-populate venue select from query params
+(function () {
+    const urlVenue = new URLSearchParams(window.location.search).get('venue');
+    if (urlVenue) {
+        const sel = document.getElementById('id_venue');
+        if (sel) { sel.value = urlVenue; sel.dispatchEvent(new Event('change')); }
+    }
+})();
+</script>
+{% endblock %}

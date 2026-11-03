@@ -1,0 +1,136 @@
+{% extends 'reservations/base.html' %}
+{% load static %}
+
+{% block title %}Interactive Availability Calendar | Campus Venue Reservation System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Interactive Availability Calendar</h1>
+        <p class="page-subtitle">Select venue and date to inspect hourly time slots, view current bookings, and reserve available slots.</p>
+    </div>
+    <div class="header-actions">
+        <a href="{% url 'booking_create' %}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Reservation</a>
+    </div>
+</div>
+
+<!-- Controls Bar: Venue & Date Selector -->
+<div class="card margin-bottom-lg">
+    <div class="card-body">
+        <form method="GET" action="{% url 'calendar' %}" id="calendarFilterForm" class="calendar-controls-form">
+            <div class="calendar-controls-grid">
+                <div class="control-group">
+                    <label class="form-label font-bold text-xs"><i class="fa-solid fa-building text-primary"></i> Select Campus Venue</label>
+                    <select name="venue" id="calendarVenueSelect" class="form-select" onchange="this.form.submit()">
+                        {% for v in venues %}
+                        <option value="{{ v.id }}" {% if current_venue and current_venue.id == v.id %}selected{% endif %}>
+                            {{ v.name }} ({{ v.capacity }} seats - {{ v.building_location }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label class="form-label font-bold text-xs"><i class="fa-regular fa-calendar text-info"></i> Select Reservation Date</label>
+                    <input type="date" name="date" id="calendarDateInput" class="form-control" value="{{ selected_date|date:'Y-m-d' }}" onchange="this.form.submit()">
+                </div>
+
+                <div class="control-group date-nav-buttons">
+                    <label class="form-label font-bold text-xs">&nbsp;</label>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline" id="prevDayBtn"><i class="fa-solid fa-chevron-left"></i> Prev Day</button>
+                        <button type="button" class="btn btn-outline" id="todayBtn">Today</button>
+                        <button type="button" class="btn btn-outline" id="nextDayBtn">Next Day <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Current Venue Summary Header -->
+{% if current_venue %}
+<div class="card venue-summary-banner margin-bottom-md">
+    <div class="card-body flex-between-center flex-wrap gap-md">
+        <div>
+            <h2 class="margin-0 text-xl font-bold">{{ current_venue.name }}</h2>
+            <div class="text-sm text-muted">
+                <i class="fa-solid fa-users text-primary"></i> Capacity: <strong>{{ current_venue.capacity }} Seats</strong> &bull; 
+                <i class="fa-solid fa-video text-info"></i> Projector: <strong>{{ current_venue.projector_type }}</strong> &bull; 
+                <i class="fa-solid fa-microphone text-success"></i> Audio: <strong>{{ current_venue.mic_system_type }}</strong>
+            </div>
+        </div>
+        <div class="flex-center gap-sm">
+            <a href="{% url 'venue_detail' current_venue.slug %}" class="btn btn-sm btn-outline">View Specs Card</a>
+            <a href="{% url 'booking_create' %}?venue={{ current_venue.id }}&date={{ selected_date|date:'Y-m-d' }}" class="btn btn-sm btn-primary">
+                Book for {{ selected_date|date:"M d" }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Legend -->
+<div class="calendar-legend-bar margin-bottom-md">
+    <div class="legend-chip legend-available"><span class="chip-color"></span> Available Slot (Click to Book)</div>
+    <div class="legend-chip legend-pending"><span class="chip-color"></span> Pending Request</div>
+    <div class="legend-chip legend-reserved"><span class="chip-color"></span> Reserved (Confirmed)</div>
+    <div class="legend-chip legend-user"><span class="chip-color"></span> User Selection</div>
+</div>
+
+<!-- Time Slot Grid -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fa-regular fa-clock text-primary"></i> Hourly Time Slot Grid for {{ selected_date|date:"l, F j, Y" }}
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="calendar-grid" id="calendarGrid">
+            {% for slot in slots %}
+            <div class="slot-tile tile-{{ slot.status }}" 
+                 data-hour="{{ slot.hour }}" 
+                 data-start="{{ slot.start_time }}" 
+                 data-end="{{ slot.end_time }}"
+                 data-status="{{ slot.status }}">
+                
+                <div class="tile-header">
+                    <span class="tile-time">{{ slot.label }}</span>
+                    <span class="tile-status-badge badge badge-{{ slot.status }}">
+                        {% if slot.status == 'available' %}
+                            <i class="fa-solid fa-circle-check"></i> Free
+                        {% elif slot.status == 'pending' %}
+                            <i class="fa-solid fa-hourglass"></i> Pending
+                        {% else %}
+                            <i class="fa-solid fa-lock"></i> Reserved
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="tile-body">
+                    {% if slot.status == 'available' %}
+                        <div class="tile-prompt">
+                            <span class="text-sm font-bold text-success"><i class="fa-solid fa-plus-circle"></i> Click to Book</span>
+                            <span class="text-xs text-muted">Slot open for booking</span>
+                        </div>
+                        <a href="{% url 'booking_create' %}?venue={{ current_venue.id }}&date={{ selected_date|date:'Y-m-d' }}&start_time={{ slot.start_time }}&end_time={{ slot.end_time }}" class="slot-action-btn">
+                            Reserve {{ slot.start_time }}
+                        </a>
+                    {% elif slot.booking %}
+                        <div class="tile-booking-info">
+                            <strong class="text-sm display-block text-truncate">{{ slot.booking.event_name }}</strong>
+                            <span class="text-xs text-muted display-block"><i class="fa-solid fa-user"></i> {{ slot.booking.organizer }}</span>
+                            <span class="text-xs font-mono text-primary display-block">Ref: {{ slot.booking.ref }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/calendar.js' %}"></script>
+{% endblock %}

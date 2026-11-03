@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LPU Campus Venue Reservation Portal{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- ── Top Navigation Bar ─────────────────────────────────────────────────── -->
+<header class="navbar-header">
+    <div class="nav-container">
+        <a href="{% url 'dashboard' %}" class="brand-logo">
+            <div class="logo-icon">
+                <img src="https://www.lpu.in/images/lpu-logo.png"
+                     alt="LPU"
+                     onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'fa-solid fa-building-columns\'></i>'"
+                     style="width:28px;height:28px;object-fit:contain;filter:brightness(0) invert(1);">
+            </div>
+            <div class="logo-text">
+                <span class="brand-name">LPU Venue Portal</span>
+                <span class="brand-sub">Lovely Professional University</span>
+            </div>
+        </a>
+
+        <nav class="nav-links" id="navMenu">
+            <a href="{% url 'dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="{% url 'venue_list' %}" class="nav-item {% if 'venue' in request.resolver_match.url_name %}active{% endif %}">
+                <i class="fa-solid fa-map-location-dot"></i> Venues
+            </a>
+            <a href="{% url 'calendar' %}" class="nav-item {% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
+                <i class="fa-regular fa-calendar-check"></i> Availability
+            </a>
+            <a href="{% url 'recommend_venue' %}" class="nav-item {% if request.resolver_match.url_name == 'recommend_venue' %}active{% endif %}">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Recommender
+            </a>
+            <a href="{% url 'my_bookings' %}" class="nav-item {% if 'booking' in request.resolver_match.url_name and request.resolver_match.url_name != 'booking_create' %}active{% endif %}">
+                <i class="fa-solid fa-list-check"></i> My Bookings
+            </a>
+            <a href="{% url 'admin_dashboard' %}" class="nav-item nav-admin {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-user-shield"></i> Admin
+            </a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="{% url 'booking_create' %}" class="btn btn-primary btn-sm nav-book-btn">
+                <i class="fa-solid fa-plus"></i> Request Venue
+            </a>
+            <button class="icon-btn theme-toggle" id="themeToggleBtn" title="Toggle Dark/Light Mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <button class="mobile-toggle" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ── Django Messages Toast ──────────────────────────────────────────────── -->
+{% if messages %}
+<div class="toast-container" id="toastContainer">
+    {% for message in messages %}
+    <div class="toast toast-{{ message.tags }}">
+        <div class="toast-icon">
+            {% if message.tags == 'success' %}<i class="fa-solid fa-circle-check"></i>
+            {% elif message.tags == 'warning' %}<i class="fa-solid fa-triangle-exclamation"></i>
+            {% elif message.tags == 'danger' %}<i class="fa-solid fa-circle-xmark"></i>
+            {% else %}<i class="fa-solid fa-circle-info"></i>{% endif %}
+        </div>
+        <div class="toast-body">{{ message }}</div>
+        <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- ── Main Content ───────────────────────────────────────────────────────── -->
+<main class="main-wrapper">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- ── Footer ────────────────────────────────────────────────────────────── -->
+<footer class="app-footer">
+    <div class="footer-container">
+        <div class="footer-left">
+            <p><i class="fa-solid fa-building-columns"></i>
+               <strong>LPU Campus Venue Reservation Portal</strong>
+               &bull; Lovely Professional University, Phagwara, Punjab – 144411
+            </p>
+            <p class="text-muted text-sm">
+                For urgent assistance contact Estate Office: 01824-404404
+                &bull; events@lpu.co.in
+            </p>
+        </div>
+        <div class="footer-right">
+            <span class="badge badge-info">
+                <i class="fa-solid fa-database"></i> Django + SQLite
+            </span>
+            <span class="badge badge-success">
+                <i class="fa-solid fa-shield-halved"></i> Secure Portal
+            </span>
+        </div>
+    </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

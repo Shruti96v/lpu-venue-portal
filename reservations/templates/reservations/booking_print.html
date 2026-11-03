@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Venue Reservation Pass - {{ booking.booking_ref }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --text-dark: #0f172a;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; padding: 40px 20px; color: var(--text-dark); }
+        .voucher-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .voucher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .univ-brand { display: flex; align-items: center; gap: 15px; }
+        .univ-logo {
+            width: 55px;
+            height: 55px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+        .univ-text h1 { font-family: 'Outfit', sans-serif; font-size: 20px; color: var(--primary); }
+        .univ-text p { font-size: 12px; color: #64748b; }
+        .voucher-ref-box { text-align: right; }
+        .ref-code { font-family: monospace; font-weight: 700; font-size: 22px; color: var(--primary); }
+        .ref-status {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #dcfce7;
+            color: #15803d;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        .voucher-section { margin-bottom: 25px; }
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary);
+            padding-left: 8px;
+        }
+        .grid-table {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .meta-field label { font-size: 11px; text-transform: uppercase; color: #64748b; display: block; }
+        .meta-field strong { font-size: 14px; color: var(--text-dark); }
+        .equipment-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .eq-chip { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+        .voucher-footer {
+            margin-top: 40px;
+            border-top: 2px dashed var(--border);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .qr-mock {
+            width: 90px;
+            height: 90px;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            text-align: center;
+            background: #fff;
+        }
+        .sign-box { text-align: center; width: 200px; }
+        .sign-line { border-bottom: 1px solid #000; margin-bottom: 6px; height: 40px; }
+        .print-btn-bar { max-width: 800px; margin: 0 auto 20px auto; display: flex; justify-content: space-between; }
+        
+        @media print {
+            body { background: #fff; padding: 0; }
+            .print-btn-bar { display: none; }
+            .voucher-container { border: none; box-shadow: none; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="print-btn-bar">
+    <a href="{% url 'booking_detail' booking.booking_ref %}" style="text-decoration: none; color: #333;"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    <button onclick="window.print()" style="background: #1e3a8a; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+        <i class="fa-solid fa-print"></i> Print Voucher Pass
+    </button>
+</div>
+
+<div class="voucher-container">
+    <div class="voucher-header">
+        <div class="univ-brand">
+            <div class="univ-logo"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="univ-text">
+                <h1>CENTRAL CAMPUS VENUE SYSTEM</h1>
+                <p>Official Event Venue Permit & Security Pass</p>
+            </div>
+        </div>
+        <div class="voucher-ref-box">
+            <div class="ref-code">{{ booking.booking_ref }}</div>
+            <div class="ref-status"><i class="fa-solid fa-circle-check"></i> {{ booking.get_status_display }}</div>
+        </div>
+    </div>
+
+    <div class="voucher-section">
+        <div class="section-title">Event & Venue Information</div>
+        <div class="grid-table">
+            <div class="meta-field">
+                <label>Event Name</label>
+                <strong>{{ booking.event_name }}</strong>
+            </div>
+            <div class="meta-field">
+                <label>Event Type</label>
+                <strong>{{ booking.get_event_type_display }}</strong>
+            </div>
+            <div class="meta-field">
+                <label>Reserved Venue</label>
+                <strong>{{ booking.venue.name }} ({{ booking.venue.building_location }})</strong>
+            </div>
+            <div class="meta-field">
+                <label>Approved Seating Capacity</label>
+                <strong>{{ booking.expected_attendance }} / {{ booking.venue.capacity }} Seats</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="voucher-section">
+        <div class="section-title">Approved Schedule & Timing</div>
+        <div class="grid-table">
+            <div class="meta-field">
+                <label>Reservation Date</label>
+                <strong>{{ booking.date|date:"l, F j, Y" }}</strong>
+            </div>
+            <div class="meta-field">
+                <label>Time Window</label>
+                <strong>{{ booking.start_time|time:"h:i A" }} to {{ booking.end_time|time:"h:i A" }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="voucher-section">
+        <div class="section-title">Organizer Information</div>
+        <div class="grid-table">
+            <div class="meta-field">
+                <label>Organizer Name & ID</label>
+                <strong>{{ booking.organizer_name }} ({{ booking.organizer_id }})</strong>
+            </div>
+            <div class="meta-field">
+                <label>Department / Organization</label>
+                <strong>{{ booking.department_club }}</strong>
+            </div>
+            <div class="meta-field">
+                <label>Contact Email</label>
+                <strong>{{ booking.email }}</strong>
+            </div>
+            <div class="meta-field">
+                <label>Phone Number</label>
+                <strong>{{ booking.phone }}</strong>
+            </div>
+        </div>
+    </div>
+
+    {% if booking.required_equipment.all %}
+    <div class="voucher-section">
+        <div class="section-title">Issued AV Equipment Checklist</div>
+        <div class="equipment-list">
+            {% for eq in booking.required_equipment.all %}
+            <span class="eq-chip"><i class="fa-solid fa-check"></i> {{ eq.name }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="voucher-footer">
+        <div class="qr-mock">
+            <i class="fa-solid fa-qrcode fa-3x"></i>
+        </div>
+        <div class="sign-box">
+            <div class="sign-line"></div>
+            <p style="font-size: 11px; text-transform: uppercase; color: #64748b;">Venue Authority Signature</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

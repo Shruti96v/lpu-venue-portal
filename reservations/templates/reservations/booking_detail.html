@@ -1,0 +1,142 @@
+{% extends 'reservations/base.html' %}
+{% load static %}
+
+{% block title %}Booking {{ booking.booking_ref }} | Details{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div class="breadcrumb text-xs text-muted margin-bottom-xs">
+            <a href="{% url 'my_bookings' %}">&larr; Back to My Bookings</a> / <span>{{ booking.booking_ref }}</span>
+        </div>
+        <h1 class="page-title">Booking Request #{{ booking.booking_ref }}</h1>
+        <p class="page-subtitle">Submitted on {{ booking.created_at|date:"F j, Y \a\t h:i A" }}</p>
+    </div>
+    <div class="header-actions">
+        {% if booking.status == 'APPROVED' or booking.status == 'RESERVED' %}
+        <a href="{% url 'booking_print' booking.booking_ref %}" target="_blank" class="btn btn-outline">
+            <i class="fa-solid fa-print"></i> Print Official Pass
+        </a>
+        {% endif %}
+        {% if booking.is_active_booking %}
+        <a href="{% url 'booking_cancel' booking.booking_ref %}" class="btn btn-danger-outline">
+            <i class="fa-solid fa-ban"></i> Cancel Request
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid grid-3-cols gap-lg">
+    <!-- Left Column: Details Card -->
+    <div class="col-span-2">
+        <div class="card margin-bottom-lg">
+            <div class="card-header border-bottom flex-between-center">
+                <h3 class="card-title"><i class="fa-solid fa-circle-info text-primary"></i> Event Summary</h3>
+                <span class="badge badge-{{ booking.status|lower }} badge-lg">
+                    <span class="badge-dot"></span> {{ booking.get_status_display }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="detail-hero-box">
+                    <h2>{{ booking.event_name }}</h2>
+                    <span class="badge badge-subtle margin-bottom-sm">{{ booking.get_event_type_display }}</span>
+                    {% if booking.event_description %}
+                    <p class="text-muted leading-relaxed margin-top-xs">{{ booking.event_description }}</p>
+                    {% endif %}
+                </div>
+
+                <hr class="divider">
+
+                <h4 class="margin-bottom-md"><i class="fa-solid fa-clock text-info"></i> Reservation Schedule</h4>
+                <div class="grid grid-2-cols gap-md">
+                    <div class="info-tile">
+                        <span class="info-label">Venue</span>
+                        <strong class="info-val text-primary">{{ booking.venue.name }}</strong>
+                        <span class="text-xs text-muted">{{ booking.venue.building_location }}</span>
+                    </div>
+                    <div class="info-tile">
+                        <span class="info-label">Date</span>
+                        <strong class="info-val">{{ booking.date|date:"l, F j, Y" }}</strong>
+                    </div>
+                    <div class="info-tile">
+                        <span class="info-label">Time Window</span>
+                        <strong class="info-val">{{ booking.start_time|time:"h:i A" }} - {{ booking.end_time|time:"h:i A" }}</strong>
+                    </div>
+                    <div class="info-tile">
+                        <span class="info-label">Expected Attendance</span>
+                        <strong class="info-val">{{ booking.expected_attendance }} / {{ booking.venue.capacity }} Seats</strong>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <h4 class="margin-bottom-md"><i class="fa-solid fa-plug text-purple"></i> Requested AV Equipment Checklist</h4>
+                <div class="equipment-tags-grid">
+                    {% for eq in booking.required_equipment.all %}
+                    <div class="eq-tag">
+                        <i class="fa-solid {{ eq.icon_class }} text-primary"></i> {{ eq.name }}
+                    </div>
+                    {% empty %}
+                    <p class="text-xs text-muted">No additional AV equipment requested.</p>
+                    {% endfor %}
+                </div>
+
+                {% if booking.special_requirements %}
+                <div class="margin-top-md">
+                    <span class="font-bold text-xs display-block text-muted">Special Requirements:</span>
+                    <p class="text-sm bg-light p-3 rounded margin-top-xs">{{ booking.special_requirements }}</p>
+                </div>
+                {% endif %}
+
+                {% if booking.admin_notes %}
+                <div class="alert alert-warning margin-top-lg">
+                    <i class="fa-solid fa-comment-dots"></i>
+                    <div>
+                        <strong>Administrative Remarks:</strong>
+                        <p class="margin-0 text-sm">{{ booking.admin_notes }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Organizer Info & Venue Spec Summary -->
+    <div>
+        <!-- Organizer Card -->
+        <div class="card margin-bottom-lg">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-user-tie text-success"></i> Organizer Contact</h3>
+            </div>
+            <div class="card-body">
+                <div class="organizer-profile">
+                    <div class="org-avatar"><i class="fa-solid fa-user"></i></div>
+                    <h4>{{ booking.organizer_name }}</h4>
+                    <span class="badge badge-outline text-xs">{{ booking.organizer_id }}</span>
+                </div>
+                <ul class="meta-list margin-top-md">
+                    <li><i class="fa-solid fa-building"></i> <span>{{ booking.department_club }}</span></li>
+                    <li><i class="fa-solid fa-envelope"></i> <a href="mailto:{{ booking.email }}">{{ booking.email }}</a></li>
+                    <li><i class="fa-solid fa-phone"></i> <span>{{ booking.phone }}</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Venue Summary Card -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-building text-info"></i> Venue Specifications</h3>
+            </div>
+            <div class="card-body text-sm">
+                <p><strong>{{ booking.venue.name }}</strong></p>
+                <p class="text-muted"><i class="fa-solid fa-chair"></i> Capacity: {{ booking.venue.capacity }} Seats</p>
+                <p class="text-muted"><i class="fa-solid fa-video"></i> Projector: {{ booking.venue.projector_type }}</p>
+                <p class="text-muted"><i class="fa-solid fa-microphone"></i> Audio: {{ booking.venue.mic_system_type }}</p>
+                <div class="margin-top-sm">
+                    <a href="{% url 'venue_detail' booking.venue.slug %}" class="btn btn-xs btn-outline btn-block">Full Venue Specs &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends 'reservations/base.html' %}
+{% load static %}
+
+{% block title %}Smart Venue Recommendation Engine | Campus Venue System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title"><i class="fa-solid fa-wand-magic-sparkles text-primary"></i> Smart Venue Recommendation Engine</h1>
+        <p class="page-subtitle">Rule-based venue matcher that finds the optimal campus hall based on expected attendance, AV equipment requirements, and real-time conflict-free availability.</p>
+    </div>
+</div>
+
+<div class="grid grid-3-cols gap-lg">
+    <!-- Left Column: Input Form -->
+    <div>
+        <div class="card sticky-sidebar">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-sliders text-primary"></i> Event Parameters</h3>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{% url 'recommend_venue' %}" id="recommendForm">
+                    <div class="form-group margin-bottom-md">
+                        <label class="form-label font-bold text-xs">Expected Attendance <span class="text-danger">*</span></label>
+                        {{ form.expected_attendance }}
+                        {% if form.expected_attendance.errors %}<div class="form-error">{{ form.expected_attendance.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-group margin-bottom-md">
+                        <label class="form-label font-bold text-xs">Preferred Date</label>
+                        {{ form.preferred_date }}
+                    </div>
+
+                    <div class="form-row-2 margin-bottom-md">
+                        <div class="form-group">
+                            <label class="form-label font-bold text-xs">Start Time</label>
+                            {{ form.start_time }}
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label font-bold text-xs">End Time</label>
+                            {{ form.end_time }}
+                        </div>
+                    </div>
+
+                    <div class="form-group margin-bottom-md">
+                        <label class="form-label font-bold text-xs">Required AV Equipment Checklist</label>
+                        <div class="equipment-selection-box max-h-60 overflow-y-auto">
+                            {{ form.required_equipment }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block margin-top-md">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> Find Best Match
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Ranked Recommendations -->
+    <div class="col-span-2">
+        {% if results is not None %}
+            <h3 class="margin-bottom-md"><i class="fa-solid fa-ranking-star text-warning"></i> Recommended Campus Venues</h3>
+            
+            {% for item in results %}
+            <div class="card margin-bottom-lg recommendation-card {% if item.is_suitable %}recommendation-suitable{% endif %}">
+                <div class="card-body">
+                    <div class="flex-between-center flex-wrap gap-md">
+                        <div class="rec-header">
+                            <h3 class="rec-title">{{ item.venue.name }}</h3>
+                            <div class="text-xs text-muted">
+                                <i class="fa-solid fa-location-dot"></i> {{ item.venue.building_location }} ({{ item.venue.floor }}) &bull; 
+                                <i class="fa-solid fa-chair"></i> {{ item.venue.capacity }} Seats Capacity
+                            </div>
+                        </div>
+
+                        <!-- Match Score Pill -->
+                        <div class="match-score-badge {% if item.match_percentage >= 80 %}score-high{% elif item.match_percentage >= 50 %}score-medium{% else %}score-low{% endif %}">
+                            <div class="score-percent">{{ item.match_percentage }}%</div>
+                            <div class="score-label">Match Score</div>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <!-- Reasons & Breakdown -->
+                    <div class="margin-bottom-md">
+                        <span class="font-bold text-xs text-muted display-block margin-bottom-xs">Algorithm Evaluation Reasons:</span>
+                        <ul class="reason-list">
+                            {% for r in item.reasons %}
+                            <li class="reason-item">
+                                {% if "Mismatch" in r or "Missing" in r or "reserved" in r %}
+                                    <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-circle-check text-success"></i>
+                                {% endif %}
+                                <span>{{ r }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Spec Summary Pills -->
+                    <div class="venue-specs-box margin-bottom-md">
+                        <div class="spec-item"><i class="fa-solid fa-video text-primary"></i> {{ item.venue.projector_type }}</div>
+                        <div class="spec-item"><i class="fa-solid fa-microphone text-info"></i> {{ item.venue.mic_system_type }}</div>
+                        {% if item.venue.has_ac %}<div class="spec-item"><i class="fa-solid fa-snowflake text-accent"></i> Air Conditioned</div>{% endif %}
+                    </div>
+
+                    <div class="card-footer p-0 border-top-0 flex-between-center">
+                        <a href="{% url 'venue_detail' item.venue.slug %}" class="btn btn-outline btn-sm">Inspect Specs Card</a>
+                        
+                        <a href="{% url 'booking_create' %}?venue={{ item.venue.id }}&attendance={{ form.cleaned_data.expected_attendance }}{% if form.cleaned_data.preferred_date %}&date={{ form.cleaned_data.preferred_date|date:'Y-m-d' }}{% endif %}{% if form.cleaned_data.start_time %}&start_time={{ form.cleaned_data.start_time|time:'H:i' }}{% endif %}{% if form.cleaned_data.end_time %}&end_time={{ form.cleaned_data.end_time|time:'H:i' }}{% endif %}" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-calendar-plus"></i> Select & Book Venue
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <p class="text-muted">No venues available matching your criteria.</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <!-- Initial State -->
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <div class="empty-icon"><i class="fa-solid fa-wand-magic-sparkles fa-3x text-primary"></i></div>
+                    <h3>Smart Venue Matcher</h3>
+                    <p class="text-muted max-w-md margin-auto margin-top-xs">
+                        Enter your expected attendance and required AV equipment on the left to get instant ranked venue recommendations!
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
