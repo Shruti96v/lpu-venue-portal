@@ -1,6 +1,7 @@
 from datetime import date, datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Q, Count
 from django.views.decorators.http import require_POST
@@ -341,6 +342,7 @@ def recommend_venue_view(request):
     return render(request, 'reservations/recommend.html', context)
 
 
+@login_required
 def admin_dashboard_view(request):
     status_filter = request.GET.get('status', 'ALL')
     bookings = Booking.objects.all()
@@ -363,6 +365,7 @@ def admin_dashboard_view(request):
     return render(request, 'reservations/admin_dashboard.html', context)
 
 
+@login_required
 @require_POST
 def admin_booking_action_view(request, booking_ref):
     booking = get_object_or_404(Booking, booking_ref=booking_ref)

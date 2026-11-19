@@ -1,0 +1,14 @@
+# ── Core multi-agent backend (Groq via OpenAI-compatible API) ─────────────────
+openai>=1.40.0
+
+# ── FastAPI web server (serves the Stitch HTML UI + JSON API) ─────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+
+# ── Original Streamlit UI (still works — run: streamlit run app_streamlit.py) ─
+streamlit>=1.35
+
+# ── Notebooks ─────────────────────────────────────────────────────────────────
+notebook>=7.0
+ipykernel>=6.29

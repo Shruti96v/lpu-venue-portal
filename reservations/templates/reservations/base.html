@@ -55,6 +55,14 @@
             <a href="{% url 'booking_create' %}" class="btn btn-primary btn-sm nav-book-btn">
                 <i class="fa-solid fa-plus"></i> Request Venue
             </a>
+            {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'logout' %}" style="margin:0">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;cursor:pointer;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </form>
+            {% endif %}
             <button class="icon-btn theme-toggle" id="themeToggleBtn" title="Toggle Dark/Light Mode">
                 <i class="fa-solid fa-moon"></i>
             </button>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><title>Atelier AI Staff</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100%;min-height:100%;margin:0;padding:0;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-tertiary-fixed": "#002110", "tertiary-fixed": "#aff2c4", "inverse-surface": "#2e312f", "on-error": "#ffffff", "secondary-fixed": "#ffdbd2", "inverse-on-surface": "#f0f1ed", "on-tertiary": "#ffffff", "error": "#ba1a1a", "on-secondary-fixed": "#3c0800", "on-secondary": "#ffffff", "on-surface": "#191c1a", "outline": "#727973", "primary-container": "#183b2b", "secondary-fixed-dim": "#ffb4a1", "on-surface-variant": "#414844", "on-tertiary-container": "#6aaa81", "on-secondary-fixed-variant": "#7c2e19", "on-secondary-container": "#742814", "tertiary-container": "#003d21", "on-primary": "#ffffff", "primary-fixed": "#c4ecd4", "surface-dim": "#d9dad7", "error-container": "#ffdad6", "on-primary-container": "#80a690", "surface-tint": "#436653", "on-background": "#191c1a", "tertiary-fixed-dim": "#93d5a9", "primary-fixed-dim": "#a9cfb9", "secondary-container": "#fc9174", "surface": "#f8faf6", "on-primary-fixed-variant": "#2b4e3d", "secondary": "#9a442d", "on-error-container": "#93000a", "tertiary": "#002512", "primary": "#002517", "surface-container-low": "#f3f4f0", "surface-container-highest": "#e1e3df", "surface-container-high": "#e7e9e5", "surface-variant": "#e1e3df", "background": "#f8faf6", "on-tertiary-fixed-variant": "#0b5130", "on-primary-fixed": "#002113", "surface-container-lowest": "#ffffff", "surface-container": "#edeeeb", "inverse-primary": "#a9cfb9", "surface-bright": "#f8faf6", "outline-variant": "#c1c8c2" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-xl": "2.5rem", "gutter-desktop": "1.5rem", "margin": "1rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "gutter": "1.25rem", "space-lg": "1.5rem", "space-md": "1rem", "margin-desktop": "2.5rem" }, fontFamily: { "label-md": ["Plus Jakarta Sans"], "headline-lg": ["Newsreader"], "body-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Newsreader"], "headline-sm": ["Newsreader"], "title-lg": ["Plus Jakarta Sans"], "display-lg-mobile": ["Newsreader"], "title-md": ["Plus Jakarta Sans"], "headline-md": ["Newsreader"], "display-lg": ["Newsreader"], "body-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"] }, fontSize: { "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }], "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.015em", fontWeight: "500" }], "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }], "headline-lg-mobile": ["26px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "500" }], "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }], "title-lg": ["18px", { lineHeight: "26px", fontWeight: "600" }], "display-lg-mobile": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "400" }], "title-md": ["15px", { lineHeight: "22px", fontWeight: "600" }], "headline-md": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "500" }], "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "400" }], "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }], "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }], "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.04em", fontWeight: "700" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface flex flex-col min-h-full font-body-md text-body-md antialiased selection:bg-primary-fixed selection:text-primary"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(24,59,43,0.04)]"><div class="h-16 px-gutter flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><img alt="Restaurant AI Staff Logo" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/ALJJyrBI8qZRuQiFWcZXdw5pw1ivCy4zZeMfQAghn2YHK-5NbjJoQOb4o49uCNGwWTTMumEKMOROAz5_96f3ZJPHm-lyoBsucBhg48pF73b0wLe_qJlcysNUVYuxf3Hce7JSI9dy36w46NqeGFHbuidR8C9xdNOKVdRkgBS6lAhUDKdrh0yFDZ5GNQ3shalIWlQ5NIU8wYtAThiRShGPHUDLYAV3vg50GgcZoBWs5uWcTYIpeg"/><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary tracking-tight truncate leading-none">Atelier</span><span class="font-label-sm text-label-sm text-secondary tracking-widest uppercase">AI</span></div><span class="font-label-sm text-label-sm text-on-surface-variant truncate font-normal leading-tight">Customer Chat</span></div></div><div class="flex items-center gap-space-sm flex-shrink-0"><div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed/40 shadow-[0_0_0_1px_rgba(76,139,100,0.25)]"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span></span><span class="font-label-sm text-label-sm font-semibold text-primary uppercase tracking-wider hidden sm:inline">AI Staff Online</span><span class="font-label-sm text-label-sm font-semibold text-primary uppercase tracking-wider sm:hidden">Online</span></div><a class="flex items-center justify-center p-0.5 rounded-full hover:opacity-90 transition-opacity min-w-[44px] min-h-[44px]" data-path="settings" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_1px_3px_rgba(24,59,43,0.12)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQs5oXRWxS61fWLmfq4XN3Re6QAzKsvwDel8SpvvJ29iJ5GPKxp77vl6oLEFzq0ukgyDbJRoe2vY31K__1JC6zgJK8hUg1SLQHqH3dEN3sWOYspRgZ1kEG-TiY6_3uVJVk5F0cOkBOHtwfzMbiaHwvC-xBXz0EPwMKTvJ6IXHlo8sOWgABtScbfWv6nIvGq6k7tM8KSorw4w9tpdmqRllWtiQN7lFLvZUTl5S_VMXx"/></a></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-20 bg-surface"><div class="flex flex-col w-full px-gutter pb-6 pt-2 space-y-4">
+<!-- Content Header -->
+<div class="flex flex-col space-y-2">
+<div class="flex items-center justify-between">
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">Your AI Restaurant Assistant</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Ask us anything or place your order. We're happy to help!</p>
+</div>
+<div class="flex -space-x-2 overflow-hidden items-center pl-2">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-fixed flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[16px]">room_service</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[16px]">soup_kitchen</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[16px]">point_of_sale</span>
+</div>
+</div>
+</div>
+<!-- Active Multi-Agent Pill -->
+<div class="bg-surface-container-low rounded-xl px-3 py-2 flex items-center justify-between shadow-sm">
+<div class="flex items-center space-x-2.5 min-w-0">
+<span class="relative flex h-2.5 w-2.5 flex-shrink-0">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span>
+</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate">
+<strong class="font-semibold text-primary">Manager Agent</strong> orchestrating with Kitchen &amp; Order Agents
+        </span>
+</div>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded-full flex-shrink-0 ml-2 uppercase tracking-wide">
+        Live Mesh
+      </span>
+</div>
+</div>
+<!-- Quick Suggestion Chips (Horizontal Scrollable) -->
+<div class="flex space-x-2 overflow-x-auto pb-1 pt-0.5 -mx-gutter px-gutter no-scrollbar">
+<button class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors whitespace-nowrap shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">menu_book</span>
+<span class="font-label-md text-label-md">Check Menu</span>
+</button>
+<button class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors whitespace-nowrap shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">lunch_dining</span>
+<span class="font-label-md text-label-md">Place an Order</span>
+</button>
+<button class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors whitespace-nowrap shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-surface-tint">event_seat</span>
+<span class="font-label-md text-label-md">Check Availability</span>
+</button>
+<button class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors whitespace-nowrap shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">add_circle</span>
+<span class="font-label-md text-label-md">Add to Table</span>
+</button>
+<button class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors whitespace-nowrap shadow-sm active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px] text-on-tertiary-container">eco</span>
+<span class="font-label-md text-label-md">Dietary Options</span>
+</button>
+</div>
+<!-- Chat Timeline -->
+<div class="flex flex-col space-y-4 pt-1">
+<!-- Turn 1: Customer -->
+<div class="flex flex-col items-end space-y-1">
+<div class="max-w-[82%] bg-primary text-on-primary rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-sm">
+<p class="font-body-md text-body-md">Is Dal Makhani available?</p>
+</div>
+<div class="flex items-center space-x-1 px-1">
+<span class="font-label-sm text-label-sm text-outline">12:42 PM</span>
+<span class="material-symbols-outlined text-[14px] text-primary">done_all</span>
+</div>
+</div>
+<!-- Turn 2: Assistant with Suggestion Card -->
+<div class="flex items-start space-x-2.5">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+<span class="material-symbols-outlined text-[18px]">smart_toy</span>
+</div>
+<div class="flex flex-col space-y-2 max-w-[88%]">
+<div class="bg-surface-container-lowest text-on-surface rounded-2xl rounded-tl-sm p-4 shadow-sm space-y-3">
+<div class="flex items-center justify-between pb-1 border-b-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Assistant • Culinary Desk</span>
+<span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed px-1.5 py-0.5 rounded">Stock Notice</span>
+</div>
+<p class="font-body-md text-body-md leading-relaxed">
+            Sorry, Dal Makhani is currently unavailable today. However, our signature <strong class="text-primary font-semibold">Dal Tadka</strong> is freshly prepared and available with 15 portions remaining. Would you like to try it?
+          </p>
+<div class="pt-1 flex items-center space-x-2">
+<button class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-primary text-on-primary font-label-md text-label-md hover:opacity-95 shadow-sm transition-transform active:scale-95" type="button">
+<span class="material-symbols-outlined text-[16px]">soup_kitchen</span>
+<span>Order Dal Tadka</span>
+</button>
+<button class="inline-flex items-center px-3 py-2 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors" type="button">
+<span>View Lentils</span>
+</button>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-outline px-1">12:43 PM</span>
+</div>
+</div>
+<!-- Turn 3: Customer -->
+<div class="flex flex-col items-end space-y-1">
+<div class="max-w-[82%] bg-primary text-on-primary rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-sm">
+<p class="font-body-md text-body-md">Add a cold drink to table 4.</p>
+</div>
+<div class="flex items-center space-x-1 px-1">
+<span class="font-label-sm text-label-sm text-outline">12:44 PM</span>
+<span class="material-symbols-outlined text-[14px] text-primary">done_all</span>
+</div>
+</div>
+<!-- Turn 4: Assistant with Attached Order Card -->
+<div class="flex items-start space-x-2.5">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+<span class="material-symbols-outlined text-[18px]">smart_toy</span>
+</div>
+<div class="flex flex-col space-y-2 max-w-[90%] w-full">
+<div class="bg-surface-container-lowest text-on-surface rounded-2xl rounded-tl-sm p-4 shadow-sm space-y-3">
+<p class="font-body-md text-body-md leading-relaxed">
+            Your cold drink has been successfully added to Table 4. It will be ready shortly!
+          </p>
+<!-- Order Confirmation Card -->
+<div class="bg-surface-container-low rounded-xl p-3.5 space-y-2.5 shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-[18px] text-secondary">receipt</span>
+<span class="font-title-md text-title-md text-primary">Order Confirmed #ORD-408</span>
+</div>
+<span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full font-semibold">
+                Table 4
+              </span>
+</div>
+<div class="flex items-center justify-between py-1 bg-surface-container-lowest px-3 rounded-lg">
+<div class="flex items-center space-x-2.5 min-w-0">
+<div class="w-7 h-7 rounded-md bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed flex-shrink-0">
+<span class="material-symbols-outlined text-[18px]">local_bar</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-body-md text-body-md font-medium text-on-surface truncate">Chilled Craft Lemon Soda</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cold Drink</span>
+</div>
+</div>
+<span class="font-title-md text-title-md text-primary ml-2 flex-shrink-0">Qty: 1</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center space-x-1.5">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+</span>
+<span class="font-label-sm text-label-sm text-on-secondary-container font-semibold uppercase tracking-wider">
+                  Sent to Kitchen • Preparing
+                </span>
+</div>
+<div class="flex items-center space-x-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+<span class="font-label-sm text-label-sm">~3 mins</span>
+</div>
+</div>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-outline px-1">12:44 PM</span>
+</div>
+</div>
+<!-- Turn 5: Customer -->
+<div class="flex flex-col items-end space-y-1">
+<div class="max-w-[82%] bg-primary text-on-primary rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-sm">
+<p class="font-body-md text-body-md">Add another cold drink.</p>
+</div>
+<div class="flex items-center space-x-1 px-1">
+<span class="font-label-sm text-label-sm text-outline">12:45 PM</span>
+<span class="material-symbols-outlined text-[14px] text-primary">done_all</span>
+</div>
+</div>
+<!-- Turn 6: Assistant with Updated Live Card -->
+<div class="flex items-start space-x-2.5">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
+<span class="material-symbols-outlined text-[18px]">smart_toy</span>
+</div>
+<div class="flex flex-col space-y-2 max-w-[90%] w-full">
+<div class="bg-surface-container-lowest text-on-surface rounded-2xl rounded-tl-sm p-4 shadow-sm space-y-3">
+<p class="font-body-md text-body-md leading-relaxed">
+            Done! Table 4 now has 2 cold drinks.
+          </p>
+<!-- Live Updated Ticket Card -->
+<div class="bg-surface-container-high rounded-xl p-3.5 space-y-2.5 shadow-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-[18px] text-primary">sync</span>
+<span class="font-title-md text-title-md text-primary font-semibold">Updated Order #ORD-408</span>
+</div>
+<span class="font-label-sm text-label-sm bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded-full font-bold">
+                Table 4
+              </span>
+</div>
+<div class="flex items-center justify-between bg-surface-container-lowest px-3 py-2 rounded-lg">
+<div class="flex items-center space-x-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">local_drink</span>
+<span class="font-body-md text-body-md text-on-surface truncate">Cold Drink x2</span>
+</div>
+<span class="font-title-md text-title-md text-primary font-bold ml-2">$7.00 total</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant pt-0.5">
+<div class="flex items-center space-x-1.5 text-primary">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span class="font-label-sm text-label-sm font-semibold">Kitchen notified</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Updated just now</span>
+</div>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-outline px-1">12:45 PM</span>
+</div>
+</div>
+</div>
+<!-- Message Input Bar Section (Floating elevated card inside content stream) -->
+<div class="sticky bottom-1 pt-2">
+<div class="bg-surface-container-lowest rounded-2xl p-2 shadow-md flex items-center space-x-1.5">
+<!-- Attachment Trigger -->
+<button aria-label="Attach notes or photos" class="p-2 text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container transition-colors flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[22px]">add_photo_alternate</span>
+</button>
+<!-- Input Field -->
+<div class="flex-1 min-w-0">
+<input class="w-full bg-transparent border-0 focus:outline-none focus:ring-0 text-on-surface placeholder:text-outline font-body-md text-body-md py-1" id="chat-user-input" placeholder="Ask something or order your favourite food..." type="text"/>
+</div>
+<!-- Microphone Button -->
+<button aria-label="Voice input" class="p-2 text-on-surface-variant hover:text-secondary rounded-full hover:bg-surface-container transition-colors flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[22px]">mic</span>
+</button>
+<!-- Send Button -->
+<button aria-label="Send message" class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center hover:bg-primary-container transition-transform active:scale-95 shadow-sm flex-shrink-0" id="chat-send-btn" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_upward</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const API = '';  // same origin — FastAPI serves this page
+    const input = document.getElementById('chat-user-input');
+    const sendBtn = document.getElementById('chat-send-btn');
+    const chatTimeline = document.querySelector('.flex.flex-col.space-y-4.pt-1');
+
+    // Wire up quick-suggestion chips
+    document.querySelectorAll('button[type="button"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const label = btn.querySelector('.font-label-md')?.textContent?.trim();
+        if (label && input) { input.value = label; input.focus(); }
+      });
+    });
+
+    function appendBubble(text, role) {
+      if (!chatTimeline) return;
+      const isUser = role === 'user';
+      const div = document.createElement('div');
+      div.className = 'flex flex-col ' + (isUser ? 'items-end' : 'items-start') + ' space-y-1';
+      div.innerHTML = isUser
+        ? `<div class="max-w-[82%] bg-primary text-on-primary rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-sm">
+             <p class="font-body-md text-body-md">${escHtml(text)}</p></div>
+           <div class="flex items-center space-x-1 px-1">
+             <span class="font-label-sm text-label-sm text-outline">${now()}</span>
+             <span class="material-symbols-outlined text-[14px] text-primary">done_all</span></div>`
+        : `<div class="flex items-start gap-2.5 max-w-[88%]">
+             <div class="shrink-0 w-7 h-7 rounded-full bg-primary-container text-on-primary-fixed flex items-center justify-center shadow-sm mt-0.5">
+               <span class="material-symbols-outlined text-[14px]">smart_toy</span></div>
+             <div class="bg-surface-container-lowest rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm border border-outline-variant/50">
+               <p class="font-body-md text-body-md text-on-surface">${escHtml(text)}</p></div></div>
+           <span class="font-label-sm text-label-sm text-outline ml-10 px-1">${now()}</span>`;
+      chatTimeline.appendChild(div);
+      div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+
+    function appendThinking() {
+      if (!chatTimeline) return null;
+      const div = document.createElement('div');
+      div.className = 'flex items-start gap-2.5';
+      div.innerHTML = `<div class="shrink-0 w-7 h-7 rounded-full bg-primary-container text-on-primary-fixed flex items-center justify-center shadow-sm mt-0.5">
+        <span class="material-symbols-outlined text-[14px]">smart_toy</span></div>
+        <div class="bg-surface-container-lowest rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm border border-outline-variant/50">
+          <span class="font-body-sm text-body-sm text-on-surface-variant animate-pulse">Agents working…</span></div>`;
+      chatTimeline.appendChild(div);
+      div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      return div;
+    }
+
+    async function handleSend() {
+      const val = input ? input.value.trim() : '';
+      if (!val) return;
+      if (input) input.value = '';
+      appendBubble(val, 'user');
+      const thinking = appendThinking();
+      try {
+        const res = await fetch(API + '/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: val })
+        });
+        const data = await res.json();
+        if (thinking) thinking.remove();
+        appendBubble(data.reply || '[No reply]', 'assistant');
+      } catch(err) {
+        if (thinking) thinking.remove();
+        appendBubble('⚠️ Could not reach the agent server. Is it running?', 'assistant');
+      }
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+    function now() {
+      return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+
+    if (sendBtn) sendBtn.addEventListener('click', handleSend);
+    if (input) input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); handleSend(); }
+    });
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(24,59,43,0.05)]" data-active-classes="text-primary font-semibold relative after:content-[''] after:absolute after:top-1.5 after:w-1 after:h-1 after:bg-secondary after:rounded-full"><div class="h-20 px-2 flex items-center justify-around"><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 text-on-surface-variant hover:text-primary transition-colors" data-path="overview" href="/"><span class="material-symbols-outlined text-[24px]">dashboard</span><span class="font-label-sm text-label-sm mt-1">Overview</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 transition-colors text-primary font-semibold relative after:content-[''] after:absolute after:top-1.5 after:w-1 after:h-1 after:bg-secondary after:rounded-full" data-path="customer-chat" href="/chat"><div class="relative"><span class="material-symbols-outlined text-[24px]">smart_toy</span><span class="absolute -top-1 -right-1.5 flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-secondary"></span></span></div><span class="font-label-sm text-label-sm mt-1">Agents</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 text-on-surface-variant hover:text-primary transition-colors" data-path="orders" href="/activity"><span class="material-symbols-outlined text-[24px]">receipt_long</span><span class="font-label-sm text-label-sm mt-1">Orders</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 text-on-surface-variant hover:text-primary transition-colors" data-path="kitchen" href="/kitchen"><span class="material-symbols-outlined text-[24px]">soup_kitchen</span><span class="font-label-sm text-label-sm mt-1">Kitchen</span></a><a class="flex flex-col items-center justify-center min-w-[44px] min-h-[44px] px-2 py-1 text-on-surface-variant hover:text-primary transition-colors" data-path="menu-&amp;-inventory" href="/chat"><span class="material-symbols-outlined text-[24px]">restaurant_menu</span><span class="font-label-sm text-label-sm mt-1">Menu</span></a></div></nav></body></html>

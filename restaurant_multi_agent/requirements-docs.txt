@@ -1,0 +1,3 @@
+# Only needed if you want to regenerate the diagram / explanation PDF.
+matplotlib>=3.8
+reportlab>=4.0
