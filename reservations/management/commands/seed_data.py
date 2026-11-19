@@ -432,4 +432,16 @@ class Command(BaseCommand):
             )
 
         self.stdout.write(self.style.SUCCESS(f"  ✔ {count} LPU event bookings seeded."))
+
+        # ── Admin Superuser ───────────────────────────────────────────────────
+        from django.contrib.auth.models import User
+        admin, created = User.objects.get_or_create(username='admin')
+        admin.email = 'admin@lpu.co.in'
+        admin.is_staff = True
+        admin.is_superuser = True
+        admin.set_password('1234')
+        admin.save()
+        label = "created" if created else "updated"
+        self.stdout.write(self.style.SUCCESS(f"  ✔ Admin user {label} — username: admin | password: 1234"))
+
         self.stdout.write(self.style.SUCCESS("\n🎉 LPU Campus Venue data ready! Run: python manage.py runserver"))
